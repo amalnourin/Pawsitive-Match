@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="first-page.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      crossorigin="anonymous"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Navbar (Admin links are usually hidden from this page) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-0">
+        <a class="navbar-brand" href="index.html"><img src="website-logo.png" class="website-logo"/></a>
+        <span class="navbar-text ml-3 font-weight-bold">Shelter Access</span>
+    </nav>
+
+    <!-- Login Section - Same Design as User Login -->
+    <div id="sectionAdminLogin" class="website-bg d-flex justify-content-center align-items-center vh-100">
+        <div class="login-form shadow p-4 rounded" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-4">Shelter/Admin Login</h2>
+            <form>
+                <div class="form-group">
+                    <label for="adminEmail">Email Address</label>
+                    <input type="email" class="form-control" id="adminEmail" name="email" placeholder="admin@pawsitivematch.com">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" class="form-control" id="adminPassword" name="password" placeholder="Enter password">
+                </div>
+                <div class="text-center">
+                    <a href="shelter_dashboard.html"><button type="submit" class="login-button">Log In as Admin</button></a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const adminForm = document.querySelector('form');
+        
+        if (adminForm) {
+            adminForm.addEventListener('submit', handleAdminLogin);
+        }
+    });
+
+    function handleAdminLogin(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        // Assuming your HTML inputs have name="email" and name="password"
+        const email = form.email.value.trim();       
+        const password = form.password.value.trim();  
+
+        const formData = { email: email, password: password };
+
+        // 🔥 FIX IS HERE: Calling the correct dedicated admin endpoint
+        fetch(`${API_BASE_URL}/admin-login`, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                // If status is 401, the API returns a message like 'Access Denied: Invalid credentials.'
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Authentication failed.');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message.includes('successful')) {
+                // Save credentials and redirect to shelter dashboard
+                localStorage.setItem('userName', data.user.name);
+                localStorage.setItem('userId', data.user.id);
+                localStorage.setItem('userRole', data.user.role); // Should be 'admin'
+
+                alert(`Welcome, Shelter Manager ${data.user.name}! Access granted.`);
+                form.reset(); 
+                window.location.href = 'shelter_dashboard.html'; // Admin area
+            } else {
+                // This shouldn't happen if the API returns 401 correctly, but included for safety
+                alert("Login failed."); 
+            }
+        })
+        .catch(error => {
+            console.error('Admin Login Fetch Error:', error);
+            alert(error.message); 
+        });
+    }
+</script>
+</body>
+</html>

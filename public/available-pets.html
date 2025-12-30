@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="first-page.css">
+   <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+   
+  </head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-0">
+  <a class="navbar-brand" href="#"><img src="website-logo.png" class="website-logo"/>
+ </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-link active" href="index.html">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="available-pets.html">Available Pets</a>
+        <a class="nav-link" href="adoption-request.html">Adoption Request</a> 
+        <a class="nav-link" href="contact-page.html">Contact</a>
+        <a class="nav-link" href="about-us.html">About Us</a>     
+    </div>
+  </div>
+</nav>
+
+<div class="website-bg pl-5">
+    <h1 class="find-companion text-center">Find Your Perfect Companion</h1>
+    <p class="find-companion-caption text-center">Browse through our adorable pets waiting for a loving home</p>
+
+    <div class="container">
+  <div class="filter-container">
+    
+    <!-- Search -->
+    <div>
+      <label for="searchInput" class="form-label">Search</label>
+      <input type="text" class="form-control" id="searchInput" placeholder="Search by name, breed, or location">
+    </div>
+
+    <!-- Species Dropdown -->
+    <div>
+      <label for="speciesSelect" class="form-label">Species</label>
+      <select class="form-select" id="speciesSelect">
+        <option selected>All Species</option>
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+        <option value="rabbit">Rabbit</option>
+        <option value="bird">Bird</option>
+      </select>
+    </div>
+
+    <!-- Age Dropdown -->
+    <div>
+      <label for="ageSelect" class="form-label">Age</label>
+      <select class="form-select" id="ageSelect">
+        <option selected>All Ages</option>
+        <option value="puppy">Puppy/Kitten</option>
+        <option value="young">Young</option>
+        <option value="adult">Adult</option>
+        <option value="senior">Senior</option>
+      </select>
+    </div>
+
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-3">
+      <div class="pet-card shadow">
+        <img src="golden-retriver-1.jpg" class="pet-card-image"/>
+                <div class="card-writing p-3"><h1 class="pet-card-heading">Buddy</h1>
+                <p class="pet-card-caption">Golden Retriever, 2 years</p>
+                <p class="pet-card-description">Friendly and playful, loves fetch and long walks in the park.</p></div>
+      </div>
+    </div>
+
+     <div class="col-3">
+      <div class="pet-card shadow">
+        <img src="cat.jpg" class="pet-card-image"/>
+                <div class="card-writing p-3"><h1 class="pet-card-heading">Bella</h1>
+                <p class="pet-card-caption">Siamese Cat, 1 year</p>
+                <p class="pet-card-description">Affectionate and calm, loves to curl up on laps for a good nap.</p></div>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="pet-card shadow">
+        <img src="labrador.jpeg" class="pet-card-image"/>
+                <div class="card-writing p-3"><h1 class="pet-card-heading">Max</h1>
+                <p class="pet-card-caption">Labrador, 3 years</p>
+                <p class="pet-card-description">Energetic and loyal, this boy would make a great running partner.</p></div>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="pet-card shadow">
+        <img src="cat-2.jpg" class="pet-card-image"/>
+                <div class="card-writing p-3"><h1 class="pet-card-heading">Lucy</h1>
+                <p class="pet-card-caption">Persian Cat, 4 years</p>
+                <p class="pet-card-description">A gentle and fluffy princess who enjoys quiet afternoons.</p></div>
+      </div>
+    </div>
+
+  </div>
+</div>    
+
+
+</div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Attach event listeners to filter elements
+        document.getElementById('speciesSelect').addEventListener('change', fetchAndDisplayPets);
+        document.getElementById('ageSelect').addEventListener('change', fetchAndDisplayPets);
+        document.getElementById('searchInput').addEventListener('input', fetchAndDisplayPets); // Triggers on every key press
+
+        // Initial load
+        fetchAndDisplayPets();
+    });
+    
+    // --- Dynamic Pet Card Generation (READ) ---
+    function renderPetCards(pets) {
+        const container = document.getElementById('petsContainer');
+        container.innerHTML = ''; 
+
+        if (pets.length === 0) {
+            container.innerHTML = '<p class="text-center col-12 text-muted">No pets match your current filters.</p>';
+            return;
+        }
+
+        const userRole = localStorage.getItem('userRole');
+
+        pets.forEach(pet => {
+            const petCardHTML = `
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="pet-card shadow">
+                        <img src="${pet.image_url}" class="pet-card-image"/>
+                        <div class="card-writing p-3">
+                            <h1 class="pet-card-heading">${pet.name} (ID: ${pet.id})</h1>
+                            <p class="pet-card-caption">${pet.breed}, ${pet.age_years} years</p>
+                            <p class="pet-card-description">${pet.description}</p>
+                            
+                            <!-- Display button conditionally based on login status -->
+                            ${userRole === 'user' ? 
+                                `<a href="adoption-request.html?petId=${pet.id}" class="btn btn-sm btn-primary mt-2">Adopt Me</a>` :
+                                (userRole === 'admin' ? 
+                                `<!-- Admin view: Can edit pet details here later -->` : 
+                                `<a href="login.html" class="btn btn-sm btn-secondary mt-2">Log in to Adopt</a>`
+                            )}
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML += petCardHTML;
+        });
+    }
+    
+    function fetchAndDisplayPets() {
+        const container = document.getElementById('petsContainer');
+        container.innerHTML = '<p class="text-center col-12">Loading pets...</p>';
+        
+        // --- Collect Filter Values ---
+        const species = document.getElementById('speciesSelect').value;
+        const age = document.getElementById('ageSelect').value;
+        const search = document.getElementById('searchInput').value.trim();
+
+        // Start constructing the query URL
+        let queryParams = [];
+
+        if (species && species !== 'All Species') {
+            queryParams.push(`species=${species}`);
+        }
+        if (age && age !== 'All Ages') {
+            queryParams.push(`age=${age}`);
+        }
+        
+        // Handle search input (search by name or breed)
+        if (search) {
+             // Note: API needs modification to fully support search, but we include the basic filter here
+            queryParams.push(`search=${search}`); 
+        }
+
+        const queryString = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
+        const fetchUrl = `${API_BASE_URL}/pets${queryString}`;
+
+
+        fetch(fetchUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('API server error');
+                return response.json();
+            })
+            .then(data => {
+                // Client-side search filtering (fallback for basic search)
+                let filteredData = data;
+                if (search) {
+                    const lowerSearch = search.toLowerCase();
+                    filteredData = data.filter(pet => 
+                        pet.name.toLowerCase().includes(lowerSearch) || 
+                        pet.breed.toLowerCase().includes(lowerSearch)
+                    );
+                }
+
+                renderPetCards(filteredData);
+            })
+            .catch(error => {
+                console.error('Error fetching pets:', error);
+                container.innerHTML = '<p class="text-center col-12 text-danger">Failed to load pets. Is the Node.js server running?</p>';
+            });
+    }
+</script>
+
+</body>
+</html>

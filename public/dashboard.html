@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="first-page.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      xintegrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      xintegrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      xintegrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      xintegrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-0">
+        <a class="navbar-brand" href="#"><img src="website-logo.png" class="website-logo"/></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link active" href="dashboard.html">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="available-pets.html">Available Pets</a>
+                <a class="nav-link" href="adoption-request.html">Adoption Request</a> 
+                <a class="nav-link" href="index.html" id="logoutButton">Logout</a> <!-- New Logout Button -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="website-bg pt-5 pl-4" id="sectionDashboard">
+        <div class="container text-center vh-100 d-flex flex-column justify-content-center align-items-center">
+            <h1 class="find-companion">Welcome Back!</h1>
+            <h3 id="welcomeMessage" class="website-name text-center mb-4"></h3>
+            <p class="find-companion-caption mb-5">Manage your adoption journey and see your submitted requests.</p>
+
+            <div class="row w-100 justify-content-center">
+                
+                <div class="col-12 col-md-4 mb-3">
+                    <a href="adoption-request.html" class="text-decoration-none">
+                        <div class="website-card text-center p-4 shadow">
+                            <img src="heart.png" class="card-logo mb-3"/>
+                            <h1 class="card-heading">New Adoption Request</h1>
+                            <p class="card-caption">Find your perfect companion now.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 col-md-4 mb-3">
+                    <a href="available-pets.html" class="text-decoration-none">
+                        <div class="website-card text-center p-4 shadow">
+                            <img src="paw-print.png" class="card-logo mb-3"/>
+                            <h1 class="card-heading">Browse Pets</h1>
+                            <p class="card-caption">See who is waiting for a home.</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Retrieve the name stored during login/register
+        const userName = localStorage.getItem('userName');
+        const welcomeElement = document.getElementById('welcomeMessage');
+
+        if (userName) {
+            welcomeElement.textContent = `Hello, ${userName}!`;
+        } else {
+            // If the name is missing, redirect back to login to force auth
+            alert("Session expired or user not logged in. Please sign in.");
+            window.location.href = 'login.html';
+        }
+
+        // --- Logout Handler ---
+        document.getElementById('logoutButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            // 1. Clear stored user data
+            localStorage.removeItem('userName'); 
+            // 2. Redirect to the home page
+            window.location.href = 'home.html';
+        });
+    });
+</script>
+
+</body>
+</html>

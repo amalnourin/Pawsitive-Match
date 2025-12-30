@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="first-page.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      crossorigin="anonymous"
+    />
+    <style>
+        /* Custom styles for the admin dashboard layout */
+        .request-card { transition: transform 0.2s; background-color: #ffffff; }
+        .request-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .btn-action { margin-left: 10px; width: 100px; }
+        .status-badge-pending { background-color: #ffc107; color: #333; font-weight: 600; }
+        .request-header { background-color: #f5f0e1; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-0">
+        <a class="navbar-brand" href="index.html"><img src="website-logo.png" class="website-logo"/></a>
+        <span class="navbar-text ml-3 font-weight-bold">Shelter Admin</span>
+        <div class="collapse navbar-collapse">
+             <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link text-primary" href="add-pet.html">Add New Pet</a></li>
+                <!-- Clear local storage on logout -->
+                <li class="nav-item"><a class="nav-link text-danger" href="index.html" onclick="localStorage.clear();">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="website-bg pt-5" style="min-height: 100vh;">
+        <div class="container">
+            <h1 class="find-companion mt-4 text-center">Shelter Management Portal</h1>
+            <p class="find-companion-caption mb-5 text-center">
+                Review and process submissions from potential adopters.
+                <span id="shelterWelcome" class="font-weight-bold text-success"></span>
+            </p>
+            
+            <h2 class="text-danger mb-4 text-center">Pending Adoption Requests</h2>
+            
+            <div id="requestContainer">
+                <!-- Request cards will be dynamically inserted here -->
+            </div>
+
+            <p id="loadingMessage" class="text-center text-muted">Loading pending requests...</p>
+        </div>
+    </div>
+
+
+<script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- AUTH CHECK: Enforce Admin Role ---
+        const userName = localStorage.getItem('userName');
+        const userRole = localStorage.getItem('userRole');
+        
+        if (userRole !== 'admin') {
+            // If not admin, deny access and redirect
+            alert('Access Denied: You must log in as an Admin/Shelter.');
+            window.location.href = 'admin-login.html';
+            return;
+        }
+
+        document.getElementById('shelterWelcome').textContent = `Welcome, ${userName}!`;
+        
+        // Fetch data immediately upon loading
+        fetchPendingRequests();
+    });
+    
+    // Function to handle Accept/Reject action (PUT request)
+    function updateRequestStatus(requestId, status) {
+        if (!confirm(`Are you sure you want to set Request ${requestId} to ${status}? This action is final.`)) {
+            return;
+        }
+
+        fetch(`${API_BASE_URL}/shelter/requests/${requestId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: status }),
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            alert(`Request ${requestId} status updated to ${status}!`);
+            fetchPendingRequests(); // Reload the list
+        })
+        .catch(error => {
+            console.error('Update Error:', error);
+            alert(`Error updating status. Check server. (${error.message})`);
+        });
+    }
+
+    // Renders the adoption requests fetched from the API
+    function renderRequests(requests) {
+        const container = document.getElementById('requestContainer');
+        const loadingMsg = document.getElementById('loadingMessage');
+        container.innerHTML = '';
+        loadingMsg.style.display = 'none';
+
+        if (requests.length === 0) {
+            loadingMsg.textContent = 'No pending adoption requests at this time. Great job!';
+            loadingMsg.style.display = 'block';
+            return;
+        }
+
+        requests.forEach(request => {
+            // Check for valid date before formatting
+            const date = request.request_date ? new Date(request.request_date).toLocaleDateString('en-US') : 'N/A';
+            
+            container.innerHTML += `
+                <div class="card request-card shadow mb-4">
+                    <div class="card-header request-header status-badge-pending">
+                        <strong>REQUEST ID: ${request.request_id}</strong> | Submitted on ${date}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">${request.pet_name} (${request.breed})</h5>
+                        <p class="card-text">
+                            <strong>Applicant:</strong> ${request.full_name} (${request.email})<br>
+                            <strong>Phone:</strong> ${request.phone}<br>
+                        </p>
+                        <h6>Reason for Adoption:</h6>
+                        <p class="card-text border p-3 mb-3 bg-light rounded">${request.reason}</p>
+                        
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-success btn-action" 
+                                    onclick="updateRequestStatus(${request.request_id}, 'Approved')">Accept</button>
+                            <button class="btn btn-danger btn-action" 
+                                    onclick="updateRequestStatus(${request.request_id}, 'Rejected')">Reject</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Fetches all pending adoption requests from the backend API
+    function fetchPendingRequests() {
+        document.getElementById('loadingMessage').textContent = 'Loading pending requests...';
+        document.getElementById('loadingMessage').style.display = 'block';
+        
+        fetch(`${API_BASE_URL}/shelter/requests`)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                renderRequests(data);
+            })
+            .catch(error => {
+                console.error('Request Fetch Error:', error);
+                document.getElementById('loadingMessage').textContent = 'Error fetching requests. Ensure backend is running.';
+            });
+    }
+</script>
+</body>
+</html>

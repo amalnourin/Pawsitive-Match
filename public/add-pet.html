@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="first-page.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      crossorigin="anonymous"
+    />
+    <style>
+        /* Custom styling for the form card */
+        .form-container { 
+            max-width: 650px; 
+            margin: 0 auto; 
+            background-color: #fff8e7; 
+            padding: 30px; 
+            border-radius: 10px; 
+        }
+        .submit-button { 
+            background-color: #D4A017; /* Matches login button color */
+            border-color: #D4A017;
+            color: #4B2E2E; 
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-0">
+        <a class="navbar-brand" href="index.html"><img src="website-logo.png" class="website-logo"/></a>
+        <span class="navbar-text ml-3 font-weight-bold">Shelter Admin</span>
+        <div class="collapse navbar-collapse">
+             <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link text-primary" href="shelter-dashboard.html">Request Review</a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="admin-login.html" onclick="localStorage.clear();">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="website-bg pt-5" style="min-height: 100vh;">
+        <div class="container mt-5">
+            <h1 class="find-companion text-center">Add New Pet to Database</h1>
+            <p class="find-companion-caption mb-4 text-center">Enter details for a pet needing adoption.</p>
+
+            <div class="form-container shadow">
+                <form id="addPetForm">
+                    <!-- Shelter Admin ID (Hidden field) -->
+                    <input type="hidden" id="shelterId" name="shelter_user_id">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="petName">Pet Name (Required)</label>
+                            <input type="text" class="form-control" id="petName" name="name" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="species">Species (Required)</label>
+                            <select class="form-control" id="species" name="species" required>
+                                <option value="Dog">Dog</option>
+                                <option value="Cat">Cat</option>
+                                <option value="Rabbit">Rabbit</option>
+                                <option value="Bird">Bird</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="breed">Breed</label>
+                            <input type="text" class="form-control" id="breed" name="breed">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="age">Age (Years)</label>
+                            <input type="number" class="form-control" id="age" name="age_years" min="0" value="1">
+                        </div>
+                    </div>
+                    
+                    <!-- 🖼️ UPDATED IMAGE INPUT SECTION -->
+                    <div class="form-group">
+                        <label for="petImageFile">Pet Image File</label>
+                        <!-- type="file" creates the "Choose Files" button -->
+                        <input type="file" class="form-control-file" id="petImageFile" accept="image/*">
+                        <!-- Hidden field to store the filename that gets sent to the API -->
+                        <input type="hidden" id="imageUrl" name="image_url" value="placeholder.png">
+                        <small id="fileHelp" class="form-text text-muted">Only the filename will be saved to MySQL (e.g., 'cat-2.jpg').</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description (Required)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn submit-button btn-block mt-4">Add Pet</button>
+                    <p id="responseMessage" class="text-center mt-3"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:3000/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const shelterIdInput = document.getElementById('shelterId');
+        const userId = localStorage.getItem('userId');
+        const userRole = localStorage.getItem('userRole');
+
+        // Authentication Check
+        if (userRole !== 'admin' || !userId) {
+            alert("Access Denied. Please log in as a Shelter Admin.");
+            window.location.href = 'admin-login.html'; 
+            return;
+        }
+        
+        // Populate the hidden shelter ID field
+        shelterIdInput.value = userId;
+
+        // Add handler for file change to update the hidden input field
+        document.getElementById('petImageFile').addEventListener('change', function() {
+            const fileInput = this;
+            const hiddenUrlInput = document.getElementById('imageUrl');
+            
+            if (fileInput.files.length > 0) {
+                // We only extract the filename, as we only save the string to the database.
+                hiddenUrlInput.value = fileInput.files[0].name;
+            } else {
+                hiddenUrlInput.value = 'placeholder.png'; 
+            }
+        });
+
+
+        document.getElementById('addPetForm').addEventListener('submit', handleAddPet);
+    });
+
+    function handleAddPet(event) {
+        event.preventDefault();
+        const form = event.target;
+        const responseMsg = document.getElementById('responseMessage');
+        responseMsg.textContent = 'Adding pet...';
+        responseMsg.className = 'text-info mt-3';
+
+        // Retrieve the filename from the HIDDEN input field (which was updated by the user selecting a file)
+        const imageUrlValue = document.getElementById('imageUrl').value.trim();
+
+        const formData = {
+            name: form.name.value.trim(),
+            species: form.species.value.trim(),
+            breed: form.breed.value.trim(),
+            age_years: parseInt(form.age_years.value) || 0,
+            description: form.description.value.trim(),
+            image_url: imageUrlValue, // Use the extracted filename here
+            shelter_user_id: parseInt(form.shelter_user_id.value) 
+        };
+
+        // Call API ENDPOINT 8: POST /api/shelter/pets
+        fetch(`${API_BASE_URL}/shelter/pets`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                 return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Failed to add pet due to server error.');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            responseMsg.className = 'text-success mt-3';
+            responseMsg.textContent = data.message;
+            
+            // Clear all input fields but keep the shelter ID
+            form.reset(); 
+            document.getElementById('shelterId').value = formData.shelter_user_id; 
+            document.getElementById('imageUrl').value = 'placeholder.png'; // Reset filename display
+        })
+        .catch(error => {
+            responseMsg.className = 'text-danger mt-3';
+            responseMsg.textContent = `Error: ${error.message}`;
+            console.error('Pet Add Error:', error);
+        });
+    }
+</script>
+</body>
+</html>

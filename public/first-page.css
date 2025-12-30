@@ -1,0 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap");
+
+.about-us-img {
+    border-radius: 15px;
+}
+
+.website-logo {
+    height:40px;
+    width: 40px;
+}
+
+.website-name {
+    font-size: 25px;
+}
+
+.website-bg {
+    background-image: url('website-bg.jpg');
+    min-height: 100vh;
+    min-width: 100vw;
+    background-size: cover;
+    padding-top: 30px !important;
+}
+
+
+.login-button {
+    background-color:#D4A017;
+    color: #4B2E2E;
+    border-radius: 8px;
+    height: 45px;
+    width: 140px;
+    font-size: 16px;
+    padding: 0 20px;
+    font-weight: 600;
+}
+
+.register-button {
+    background-color: transparent;
+    color: #4B2E2E;
+    border-color: #4B2E2E;
+    border-radius: 8px;
+    height: 45px;
+    width: 140px;
+    font-size: 16px;
+    padding: 0 20px;
+    font-weight: 600;
+}
+
+.website-name {
+    font-size: 45px;
+    color: #4B2E2E;
+}
+
+.website-caption {
+    font-size: 20px;
+    color: #4B2E2E;
+}
+
+#howItWorks {
+    font-size: 25px;
+    color: #4B2E2E;
+}
+
+#howItWorksCaption {
+    font-size: 15px;
+    color: #4B2E2E;
+}
+
+.card-logo {
+    height: 40px;
+    width: 40px;
+}
+
+.website-card {
+    background-color: #F5F0E1;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+}
+
+.card-heading {
+    font-size: 18px;
+    color: #4B2E2E;
+}
+
+.card-caption {
+    font-size: 12px;
+    color: #4B2E2E;
+}
+
+.filter-card {
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+}
+
+.filter-card .card-title {
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.filter-card .card-title i {
+  color: #444;
+}
+
+.custom-select {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.ap-heading {
+    font-size: 30px ;
+    color: #4B2E2E;
+}
+
+.ap-description {
+    color: #4B2E2E;
+}
+
+.card-img-top {
+    height: 200px;
+}
+
+.find-companion {
+    color: #4B2E2E;
+}
+
+.filter-container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin: 20px;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.form-select, 
+.form-control {
+  min-width: 220px;
+}
+
+.pet-card-image {
+    width: 100%;
+    height: 200px;
+}
+
+.pet-card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.card-writing {
+    background-color: white;
+}
+
+.pet-card-heading {
+    font-size: 20px;
+}
+
+.pet-card-caption {
+    font-size: 14px;
+    color: grey;
+}
+
+.pet-card-description {
+    font-size: 16px;
+}
+
+.adoption-form-card {
+    background-color: #fff8e7;
+    border-radius: 10px;
+}
+
+.submit-button {
+    background-color: #c18e8e;
+    color: white;
+    border-width: 0;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.login-form {
+    background-color: #F5F0E1;
+    border-radius: 20px;
+}
+
